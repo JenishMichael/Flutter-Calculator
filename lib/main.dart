@@ -25,6 +25,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  String display = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,9 +49,9 @@ class _HomeState extends State<Home> {
             //color: Colors.amber,
             padding: const EdgeInsets.fromLTRB(0, 5, 15, 20),
             alignment: Alignment.bottomRight,
-            child: const Text(
-              "0",
-              style: TextStyle(
+            child: Text(
+              display,
+              style: const TextStyle(
                   fontSize: 50,
                   fontWeight: FontWeight.w700,
                   color: Colors.white),
@@ -111,7 +112,9 @@ class _HomeState extends State<Home> {
         //color: Colors.blue,
         padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            onClick(btnText);
+          },
           style: ButtonStyle(
               backgroundColor: WidgetStatePropertyAll(getBtnBg(btnText)),
               shape: WidgetStatePropertyAll(RoundedRectangleBorder(
@@ -126,6 +129,63 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
+  }
+
+  List<int> intDisplays = [];
+  void onClick(String btnText) {
+    if (btnText == "AC") {
+      setState(() {
+        display = "";
+      });
+    } else if (btnText == "C") {
+      if (display.isNotEmpty) {
+        setState(() {
+          display = display.substring(0, display.length - 1);
+        });
+      }
+    } else if (btnText == "=") {
+      if (display.contains("x")) {
+        List<String> listStr = display.split("x");
+        double displayInt = 1;
+        for (int i = 0; i < listStr.length; i++) {
+          displayInt = displayInt * double.parse(listStr[i]);
+        }
+        setState(() {
+          display = displayInt.toStringAsFixed(2);
+        });
+      } else if (display.contains("+")) {
+        List<String> listStr = display.split("+");
+        double displayInt = 0;
+        for (int i = 0; i < listStr.length; i++) {
+          displayInt = displayInt + double.parse(listStr[i]);
+        }
+        setState(() {
+          display = displayInt.toStringAsFixed(2);
+        });
+      } else if (display.contains("/")) {
+        List<String> listStr = display.split("/");
+        double displayDouble = double.parse(listStr[0]);
+        for (int i = 1; i < listStr.length; i++) {
+          displayDouble = displayDouble / double.parse(listStr[i]);
+        }
+        setState(() {
+          display = displayDouble.toStringAsFixed(2);
+        });
+      } else if (display.contains("-")) {
+        List<String> listStr = display.split("-");
+        double displayInt = double.parse(listStr[0]);
+        for (int i = 1; i < listStr.length; i++) {
+          displayInt = displayInt - double.parse(listStr[i]);
+        }
+        setState(() {
+          display = displayInt.toStringAsFixed(2);
+        });
+      }
+    } else {
+      setState(() {
+        display += btnText;
+      });
+    }
   }
 
   Color getColortxt(String txt) {
